@@ -1,0 +1,365 @@
+
+/* 
+
+clock config: 
+
+    {
+        src: 'https://img.abv.bg/e/a/abv-home-time-branding.jpg',
+        url: '[countgo]https://goo.gl/GMhIZb',
+        color: '#a801d7',
+        counter: '',
+        abv_code: 'abvClock'
+    }
+
+wallpaper config: 
+
+    {
+        abv_code: 'wallpaper',
+        clickTag: '[countgo]https://goo.gl/GMhIZb',
+        backgroundImage: 'https://bimg.abv.bg/banners/HM2018/abv02.png',
+        backgroundColor: '#fff',
+        backgroundPosition: '50% 0',
+        // could be a web page or image (.png, .jpg, .gif)
+        bannerURL: 'https://bimg.abv.bg/banners/HM2018/index.html',
+        // optional property, the patterns is { cssKeyName: 'value', cssKeyName2: 'value', ... }, when it isn't used set as null or empty object -> {}
+        bannerCss: null
+    }
+
+skin ad config:
+
+    {
+        clickTag: '[countgo]https://goo.gl/5iDkhp',
+        bg: 'https://bimg.abv.bg/banners/HTML5/Vedra2018/IslaMarch/AbvSkinAd.jpg',
+        bgTop: 0,
+        height: 670,
+        light: false,
+        color: '',
+        video: {
+            src: 'https://bimg.abv.bg/banners/HTML5/Vedra2018/IslaMarch/ISLAwebvideo_v2_converted.mp4',  
+            h: 280,
+            w: 500,
+            css: 'position: absolute; top: 54px; left: 80px; box-shadow: 0px 0px 0px 0px #fff;',
+            image: 'https://bimg.abv.bg/banners/HTML5/Vedra2018/IslaMarch/Timb.jpg',
+            playCounter: ''
+        },
+        Image: {
+            src: '',
+            h: 350,
+            w: 960,
+            css: 'position: absolute; top: 20px; left: 0px; box-shadow: 0px 0px 0px 0px #fff;',
+            tag: '[countgo]'
+        },
+        Banner: {
+            src: '',
+            h: 200,
+            w: 750,
+            css: 'position: absolute; top: 100px; left: 50%; transform: translateX(-50%); box-shadow: 0px 0px 0px 0px #fff;',
+            tag: '[countgo]'
+        }
+    }
+
+*/
+if (!String.prototype.startsWith) {
+    Object.defineProperty(String.prototype, 'startsWith', {
+        value: function (search, pos) {
+            return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+        }
+    });
+}
+
+$(function () {
+
+    console.log('<!-- ### AbV banners library v.5.1 ### -->');    
+
+    var allowedDomains = [
+            'https://bimg.abv.bg',
+            'https://m.netinfo.bg',
+            'https://m4.netinfo.bg',
+            'https://img.abv.bg'
+        ],
+        allowedOrigins = [
+            'https://www.abv.bg',
+            'https://abv.bg',
+            'https://img.abv.bg',
+            'https://tpc.googlesyndication.com',
+            'http://abvnew.ni.bg',
+            'https://abvnew.abv.bg'
+        ];
+
+    Array.prototype.checkDomains = function () {
+        var result = true, a = Array.prototype.slice.call(arguments);
+        this.forEach(function (o) {
+            var tmp = false;
+            for (var x = 0; x <= a.length - 1; x++) {
+                tmp = o !== (new URL( a[x] )).origin;
+                result &= tmp;
+            }
+        });
+        return !result;
+    }
+
+    window.addEventListener('message', messageHandler, false);
+
+    function messageHandler(e) {
+
+        console.log('Abv banner library: message received! Message data: ', e.data, 'Origin: ', e.origin);
+
+        if (!allowedOrigins.checkDomains(e.origin)) return;
+
+        if (typeof e.data === 'string') var config = /(?=^(\{)).*?(?=(\})$)/.test(e.data) ? JSON.parse(e.data) : {};
+        else if (typeof e.data === 'object' && e.data != null && !('forEach' in e.data)) var config = e.data;
+        else return;
+
+        if ('abv_code' in config)
+            switch (config.abv_code) {
+                case 'skinAd':
+                    addSkin(config);
+                    break;
+                case 'wallpaper':
+                    abvWallpaper(config);
+                    break;
+                case 'abv_nativeAd':
+                    showNative(config);
+                    break;
+                case 'abvRibbon':
+                    abvRibbon(config);
+                    break;
+                case 'abvClock':
+                    brandClock(config);
+                    break;
+            }
+        else return;
+    }
+
+    function brandClock(config) {
+
+        if (!allowedDomains.checkDomains(config.src)) return;
+        
+        var clock = new Clock(),
+            css = 'display: block; width: 100%; overflow: hidden; height: 26px; position: absolute; bottom: -3px;';
+
+        $('#dateTime').append('<a href="' + config.url + '" target="_blank" style="' + css + '"><img src="' + config.src + '" alt="" /></a>');
+
+        window.clearInterval(clock_tid);
+
+        if (config.color) {
+            clock.color.hands = config.color;
+            $('.cell.cday').css('background', config.color);
+        }
+
+        if (config.font) clock.font = config.font;
+
+        if (config.counter) (new Image).src = config.counter;
+
+        clock.init();
+    }
+
+    function abvWallpaper(_config_) {
+        
+        if (!allowedDomains.checkDomains(_config_.backgroundImage)) return;
+
+        var h = Math.max.apply(null, [$('body').height(), $(window).height()]),
+            wall = $('<a href="' + _config_.clickTag + '" target="_blank" />').css({
+                position: 'fixed',
+                top: -35,
+                left: 0,
+                width: '100%',
+                height: isNaN(h) ? '100%' : h,
+                background: _config_.backgroundColor + ' url(' + _config_.backgroundImage + ') no-repeat',
+                backgroundPosition: _config_.backgroundPosition ? _config_.backgroundPosition : '0 0'
+            }),
+            banner = /(jpg|gif|png)$/i.test(_config_.bannerURL) ?
+                '<a href="' + _config_.clickTag + '" target="_blank"><img src="'
+                + _config_.bannerURL + '" alt="" width="300" height="250" /></a>' :
+                '<iframe src="'
+                + _config_.bannerURL + '#clickTag=' + _config_.clickTag
+                + '" width="300" height="250" frameborder="0" scrolling="no" "sandbox"="allow-same-origin allow-scripts" />';
+
+        if (Object.keys(_config_.bannerCss || {}).length) wall.css(_config_.bannerCss);
+
+        $('#siteContent, #toplinks, footer').css({
+            position: 'relative',
+            zIndex: 1000
+        });
+        $('#banner300x250, #ffExt, #explorerAddfav, #chromeExt').hide();
+
+        $('#wrapper').append(wall);
+
+        $('#nonstandartBanHolder').append(banner);
+    }
+
+    function addSkin(_config_) {
+
+        if (!allowedDomains.checkDomains(_config_.bg)) return;
+
+        $('.column, #rowAdv, #banner300x250, .fasha').hide();
+
+        if (_config_.Image.src)
+            $('\<div style="position: relative; min-height: ' + _config_.height / 2 + 'px;" id="skinAdImage">\<a href="' + _config_.Image.tag + '" target="_blank">\<img id="skinAdImg" scrolling="no" " width="' + _config_.Image.w +
+                '" height="' + _config_.Image.h + '" style="' + _config_.Image.css + '" src="' + _config_.Image.src +
+                '" \/>\</a>\</div>').appendTo('#blocks');
+
+        if (_config_.Banner.src)
+            $('\<div style="position: relative; min-height: ' + _config_.height / 2 + 'px;" id="skinAdBanner">\<iframe id="skinAdBannerFrame" scrolling="no" " width="' + _config_.Banner.w +
+                '" height="' + _config_.Banner.h + '" style="' + _config_.Banner.css + '" src="' + _config_.Banner.src + '#' + _config_.Banner.tag +
+                '">\</iframe>\</div>').appendTo('#blocks');
+
+        if (_config_.video.src) $('<div style="position: relative; ' + _config_.video.css + '" id="skinAdVideo"><video id="skinAdVideoPlayer" width="' + _config_.video.w +
+            '" height="' + _config_.video.h + '" poster="' + _config_.video.image +
+            '"><source src="' + _config_.video.src +
+            '" type="video/mp4"></video><a id="skinAdVideoLink" style="display: block; position: absolute; ' +
+            'width: ' + _config_.video.w + 'px; height: ' + (_config_.video.h - 60) + 'px; top: 0; left: 0; z-index: 2;"></a><span id="videoPlayButton" style="background:  url(http://www.abv.bg/images/play.png) no-repeat 50%; display: block; position: absolute; ' +
+            'width: ' + _config_.video.w + 'px; height: ' + _config_.video.h + 'px; top: 0; left: 0; z-index: 3; cursor: pointer;"></span></div>').appendTo('#blocks');
+
+        $('#siteContent').height(_config_.height);
+
+        $($('<a class="skinAdWallpaper" ' + (_config_.clickTag ? 'href="' + _config_.clickTag +
+            '" ' : '') + ' target="_blank"></a>').css({
+
+                position: 'absolute',
+                width: '100%',
+                height: $('body').height() + 'px',
+                top: 0,
+                left: 0,
+                background: 'url(' + _config_.bg + ') no-repeat 50% ' + _config_.bgTop +
+                    'px',
+                zIndex: 1
+
+            })).appendTo('#wrapper');
+
+        $('body').css({
+            background: '#f0f0f0'
+        });
+
+        $('#toplinks, #loginForm, footer, #mainHeader, #banner_300x250 a, #blocks').css({
+            zIndex: 2,
+            position: 'relative'
+        });
+
+        $('#blocks').css({
+            height: 1 + 'px',
+            padding: 0
+        });
+
+        if (_config_.light) {
+            $('#mainHeader h1')
+                .css({
+                    backgroundImage: 'url(https://img.abv.bg/AbvProductAds/logo.png)',
+                    width: '164px'
+                });
+            $('header #mobileVersion')
+                .css({
+                    background: 'url(https://img.abv.bg/AbvProductAds/mobile.png) no-repeat',
+                    color: '#fff'
+                });
+        }
+        else
+            $('#mainHeader h1, header #mobileVersion')
+                .css({ backgroundImage: 'url(https://img.abv.bg/AbvProductAds/spriteAbv.png)' });
+
+        $($('<a href="#" class="skinAdClose">Затвори <span style="font: 20px cursive; position: relative; top: 2px;">Х</span></a>')
+            .css({
+                font: 'bold 15px sans-serif, Arial',
+                color: (!_config_.color ? (_config_.light ? '#fff' : '#222') : _config_.color),
+                background: (!_config_.color ? (_config_.light ? '#222' : '#fff') : 'transparent'),
+                position: 'relative',
+                zIndex: 2,
+                padding: '4px 6px',
+                textDecoration: 'none',
+                left: -25,
+                top: -8
+            })).appendTo('#banner_300x250');
+
+
+        $('skinAdVideo').on('playing', function () {
+            if (_config_.playCounter) (new Image).src = _config_.playCounter;
+        });
+
+        $('body').on('click', '.skinAdClose', skinAdCloseHandler);
+
+        var video = $('#skinAdVideoPlayer'),
+            button = $('#videoPlayButton');
+
+        button.on('click', playVideo);
+        video.on('ended', reinitVid);
+
+        if (_config_.clickTag) $('#skinAdVideoLink').prop('href', _config_.clickTag).prop('target', '_blank');
+
+        function playVideo() {
+            video[0].play();
+            video.attr('controls', '');
+            button.hide();
+        }
+
+        function reinitVid() {
+            video.removeAttr('controls');
+            video[0].load();
+            button.show();
+        }
+
+        function skinAdCloseHandler(e) {
+            e.preventDefault();
+            $('.skinAdWallpaper').remove();
+            $('.skinAdClose').remove();
+            $('#siteContent').height('auto');
+            $('#blocks').css({
+                height: 'auto',
+                paddingTop: '40px'
+            });
+            $('.column, #rowAdv, #banner300x250').show();
+            $('#banner300x250').attr('src', 'https://bimg.abv.bg/a/skinadBack.html');
+            $('#mainHeader h1')
+                .css({
+                    backgroundImage: 'url(https://www.abv.bg/images/spriteAbv.png)',
+                    width: '163px'
+                });
+            $('header #mobileVersion')
+                .css({
+                    background: 'url(https://www.abv.bg/images/spriteAbv.png) no-repeat -243px -28px',
+                    color: '#000'
+                });
+            $('body').css({
+                background: '#fff'
+            });
+
+            if (_config_.video.src)
+                $('#skinAdVideo').remove();
+            if (_config_.Banner.src)
+                $('#skinAdBanner').remove();
+            if (_config_.Image.src)
+                $('#skinAdImage').remove();
+        }
+    }
+
+    /*
+    Native Ads
+    */
+    function showNative(obj) {
+
+        if(!allowedDomains.checkDomains(obj.thumbWide)) return;
+
+        var o = $('<a href="' + obj.url + '" target="_blank" title="' + decodeURIComponent(obj.title) + ' - Реклама от '
+            + obj.hostSite + '" style="visibility: visible; overflow: hidden;"><span style="float: left; width: 178px; overflow: hidden;">' + decodeURIComponent(obj.title)
+            + '</span><img alt="" width="13" height="10" boder="0" src="https://img.abv.bg/AbvProductAds/pp_icon.gif" style="margin-left: -6px; margin-top: 21px;" /></a>');
+
+        if (obj && typeof obj == 'object') {
+            $('.newsLinks a[data-id]:eq(2)').after(o);
+            newsImages.splice(3, 0, obj.thumbWide);
+            $('#newsImageHolder .image').css('background-size', '260px 180px');
+            $(".newsLinks a").on('mouseover', newsBlockInit);
+        }
+        else
+            return;
+
+    }
+    /*
+        Native Ads end
+    */
+    //Ribbon banner v1.0
+    function abvRibbon(_config_) {
+        if(!allowedDomains.checkDomains(_config_.bannerURL)) return;
+        var el = $('<a target="_blank" href="' + _config_.bannerCOUNT + encodeURI(_config_.clickTag) + '"><img src="' + _config_.bannerURL + '" width="967" height="68" /></a>');
+        $('#bannerMiddlePage').append(el);
+    };
+    //Ribbon banner end
+});

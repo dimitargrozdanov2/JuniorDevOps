@@ -1,0 +1,327 @@
+(function (w, d) {
+
+    /* script congig */
+    w._ifr_ = {
+        frameId: 'abv-GDPR-frame',
+        link: '.abv-gdprTool',
+        buttonX: 'abv-iframe-X',
+        src: 'https://img.abv.bg/e/s/abv_gdpr.html',
+        regEx: 'img\.abv\.bg', // allowed domains
+        /* add link function, null value when it is not used */
+        addLink: function () {
+            if (/m\.abv\.bg/g.test(window.location)) {
+                $('.full-version-link').append('<a class="abv-gdprTool fr" href="javascript://">GDPR</a>');
+            } else {
+                var o = $('a[href*="gdpr"]');
+                o = $(o.get(o.length - 1));
+                if (o.length >= 1)
+                    o.after((/dox/g.test(location) ? '' : '<span style="margin: 0 5px;">|</span>') + '<a class="abv-gdprTool" href="javascript://">GDPR</a>');
+                else return false;
+            }
+        },
+        /* add link function end */
+        /* do not touch below */
+        o: null,
+        x: null
+    };
+    /* script congig end */
+
+    console.log('GDPR v.10.1.abv fio');
+
+    /* jquery check */
+    w.$ = typeof w.$ !== 'undefined' ? w.$ : typeof jQuery !== 'undefined' ? jQuery : null;
+
+    if ($ == null)
+        (function (w, d) {
+
+            w.$ = function (sel) {
+                return new ni(sel);
+            }
+
+            function ni(sel) {
+
+                this.el = (function () {
+                    if (/<(?=.*? .*?\/ ?>|br|hr|input|!--|wbr)[a-z]+.*?>|<([a-z]+).*?<\/\1>/i.test(sel)) {
+                        var el = document.createElement('div')
+                        el.insertAdjacentHTML('beforeend', sel);
+                        return el.childNodes[0];
+                    }
+                    else return document.querySelector(sel);
+                })();
+
+                this.on = function (event, callback, f) {
+                    this.el.addEventListener(event, callback, f);
+                    return this;
+                }
+
+                this.off = function (event, callback, f) {
+                    this.el.removeEventListener(event, callback, f);
+                    return this;
+                }
+
+                this.attr = function (attr, val) {
+                    this.el.setAttribute(attr, val);
+                    return this;
+                }
+
+                this.css = function () {
+
+                    if (!this.el) return;
+
+                    if (this.css.arguments.length == 2 && typeof this.css.arguments[0] == 'string')
+                        this.el.style[this.css.arguments[0]] = this.css.arguments[1];
+                    else if (this.css.arguments.length == 1 && typeof this.css.arguments[0] == 'object')
+                        for (var x in Object.keys(this.css.arguments[0])){
+                            var css = Object.keys(this.css.arguments[0])[x], 
+                                val = this.css.arguments[0][Object.keys(this.css.arguments[0])[x]];
+                            this.el.style[css] = typeof val === 'number'? val + 'px' : val;
+                        }
+                    else return;
+
+                    return this;
+                }
+
+                this.get = function(index) {
+                    return document.querySelectorAll(sel)[index];
+                }
+
+                return this;
+            }
+
+            var parsed = (d.location.href.split('#')[1] || '').split('&');
+            $.constructor.prototype.params = parsed.reduce(function (params, param) {
+                var param = param.split('=');
+                params[param[0]] = decodeURIComponent(param.slice(1).join('='));
+                return params;
+            }, {});
+
+            $.constructor.prototype.cookie = function (name, value, options) {
+                if (typeof value != 'undefined') {
+                    options = options || {};
+                    if (value === null) {
+                        value = '';
+                        options.expires = -1
+                    }
+                    var expires = '';
+                    if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
+                        var date;
+                        if (typeof options.expires == 'number') {
+                            date = new Date();
+                            date.setTime(date.getTime() + (options.expires * 24 * 60 * 60 * 1000))
+                        } else {
+                            date = options.expires
+                        }
+                        expires = '; expires=' + date.toUTCString()
+                    }
+                    var path = options.path ? '; path=' + (options.path) : '';
+                    var domain = options.domain ? '; domain=' + (options.domain) : '';
+                    var secure = options.secure ? '; secure' : '';
+                    d.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('')
+                } else {
+                    var cookieValue = null;
+                    if (d.cookie && d.cookie != '') {
+                        var cookies = d.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = cookies[i].trim();
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break
+                            }
+                        }
+                    }
+                    return cookieValue
+                }
+            };
+
+            ni.prototype.append = function (o) {
+                if (typeof o === 'undefined' || o == null)
+                    return;
+                else if (typeof o === 'object')
+                    this.el.appendChild(o.el);
+                else if (typeof o === 'string')
+                    this.el.insertAdjacentHTML('beforeend', o);
+                return this;
+            }
+
+            ni.prototype.before = function (o) {
+                if (typeof o === 'undefined' || o == null)
+                    return;
+                else if (typeof o === 'object')
+                    this.el.parentNode.insertBefore(o.el, this.el);
+                else if (typeof o === 'string')
+                    this.el.insertAdjacentHTML('beforebegin', o);
+                return this;
+            }
+
+            ni.prototype.after = function (o) {
+                if (typeof o === 'undefined' || o == null)
+                    return;
+                else if (typeof o === 'object')
+                    this.el.parentNode.insertBefore(o.el, this.el.nextSibling);
+                else if (typeof o === 'string')
+                    this.el.insertAdjacentHTML('afterend', o);
+                return this;
+            }
+
+            ni.prototype.text = function (txt) {
+                this.el.textContent = this.el.textContent || this.el.innerText;
+                if (!txt) return this.el.textContent;
+                else {
+                    this.el.textContent = txt;
+                    return this;
+                }
+            }
+
+            ni.prototype.html = function (html) {
+                if (!html) return this.el.innerHTML;
+                else {
+                    this.el.innerHTML = html;
+                    return this;
+                }
+            }
+
+            ni.prototype.hide = function () {
+                this.el.style.display = 'none';
+                return this;
+            }
+
+            ni.prototype.show = function () {
+                this.el.style.display = 'block';
+                return this;
+            }
+
+        })(w, d);
+    /* jquery check end */
+
+    w._ifr_.src += '?t=' + (new Date).getTime();
+
+    w._ifr_.win = function () {
+        var win = _ifr_.o.get(0);
+        return win.contentWindow || win.contentDocument;
+    };
+
+    w._ifr_.openFrame = function () {
+        createFrame();
+        showManager();
+    };
+
+    w._ifr_.gdprCloseframe = function () {
+        if (!_ifr_.length) {
+            _ifr_.o.remove();
+        }
+        else return;
+    };
+
+    w.addEventListener('message', receiveMessage, false);
+    w.addEventListener('load', createFrame, false);
+
+    function receiveMessage(e) {
+
+        if (!(new RegExp(_ifr_.regEx, 'g')).test(e.origin)) return;
+
+        switch (e.data) {
+            case 'maximize-gdpr-frame':
+                gdprMaximizeframe();
+                break;
+            case 'close-gdpr-frame':
+                gdprCloseframe();
+                break;
+            case 'minimize-gdpr-frame':
+                gdprMinimizeframe();
+                break;
+            case 'frame-loaded-show':
+                factorInit(true);
+                break;
+            case 'frame-loaded-hide':
+                factorInit(false);
+                break;
+        }
+    }
+
+    function showTool() {
+        gdprMaximizeframe();
+        _ifr_.win().postMessage('maximize-gdpr-tool', '*');
+    }
+
+    function showManager() {
+        gdprMaximizeframe();
+        _ifr_.win().postMessage('maximize-gdpr-manager', '*');
+    }
+
+    function hideTool() {
+        gdprMinimizeframe();
+        _ifr_.win().postMessage('minimize-gdpr-tool', '*');
+    }
+
+    function gdprMinimizeframe() {
+        _ifr_.x.css({ display: 'none' });
+        _ifr_.o.css({
+            left: 0,
+            bottom: 50,
+            width: 100,
+            height: 100
+        });
+        if (_ifr_.link) _ifr_.o.hide();
+        else _ifr_.o.show();
+    }
+
+    function gdprMaximizeframe() {
+        _ifr_.o.css({
+            left: 0,
+            bottom: 0,
+            width: '100%',
+            height: '100%'
+        }).show();
+        if (_ifr_.buttonX) _ifr_.x.css({ display: 'block' });
+    }
+
+    function factorInit(f) {
+
+        if (f) showTool();
+        else hideTool();
+
+        if (_ifr_.link) {
+            if (typeof _ifr_.addLink === 'function') _ifr_.addLink();
+            $(_ifr_.link).on('click', _ifr_.openFrame);
+        }
+    }
+
+    function createFrame() {
+
+        if (_ifr_.o != null) return;
+
+        var ifrSrc = w._ifr_.src,
+            iframe = $('<iframe id="' + _ifr_.frameId + '" frameborder="0" scrolling="no"  sandbox="allow-same-origin allow-scripts allow-popups allow-forms" />'),
+            closeX = $('<div id="' + _ifr_.buttonX + '" />');
+
+        iframe.attr('src', ifrSrc);
+        iframe.css({
+            position: 'fixed',
+            zIndex: 99998,
+            left: 0,
+            bottom: 0,
+            display: 'none'
+        });
+
+        closeX.text('x');
+        closeX.css({
+            zIndex: 99999,
+            position: 'fixed',
+            display: 'none',
+            top: 5,
+            right: 5,
+            background: '#fff',
+            padding: '5px 14px 8px',
+            borderRadius: 25,
+            font: 'bold 24px Arial',
+            color: '#898989',
+            cursor: 'pointer'
+        });
+
+        $('body').append(iframe).append(closeX);
+        _ifr_.o = $('#' + _ifr_.frameId);
+        _ifr_.x = $('#' + _ifr_.buttonX);
+        _ifr_.x.on('click', hideTool);
+    }
+
+})(window, document);

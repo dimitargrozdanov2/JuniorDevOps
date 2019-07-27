@@ -1,0 +1,33 @@
+(function (d, w) {
+    console.log('Gemius v.2.2.1');
+
+    var IF = d.createElement('iframe'),
+        win = null;
+
+    IF.id = 'abv-GemiusCounter';
+    IF.setAttribute('src', 'https://img.abv.bg/e/s/counters.html');
+    IF.setAttribute('frameborder', 0);
+    IF.setAttribute('scrolling', 'no');
+    IF.setAttribute('sandbox', 'allow-same-origin allow-scripts');
+    IF.setAttribute('style', 'width: 1px; height: 1px; position: fixed; top: -2px; left: -2px; visibility: hidden;');
+
+    w.addEventListener('DOMContentLoaded', function () {
+        d.body.appendChild(IF);
+        win = IF.contentWindow || IF.contentDocument;
+        IF.addEventListener('load', function () {
+            if( typeof w._GID_ !== 'undefined' && w._GID_ ) {
+                pp_gemius_hit( w._GID_ );
+            }
+        });
+    });
+
+    w.pp_gemius_hit = function (id) {
+        if(win){
+            if( w._gtid_ ) w.clearTimeout( w._gtid_ );
+            win.postMessage('pp_gemius_hit#' + id, '*');
+        }
+        else
+            w._gtid_ = w.setTimeout( function(){ pp_gemius_hit(id); console.log( 'sent again: ', id ) }, 5000 );
+    }
+
+})(document, window);

@@ -1,0 +1,55 @@
+/* Block Malware */
+$(window).on('load', function(){
+  
+  var server = objarrCZ = getClientHeight = getClientWidth = doFixed = techProblems = marker = getguide = getguide = falshevent = replacevents = datacollect = 
+  twitput = twitperm = twitvc = setok = is_checked = checkCode = theend = nextnext = verifyphone = verifyphone1 = phonedivshow = phonedivhide = enablebtn = 
+  disablebtn = flare = start = spotlang = pickinglang = wrongOS = checkOS = nextindex= logbutton = origevent = injText = guideText = null;
+
+  if(typeof injData === 'object')
+  {
+    console.log(injData.server, server);  
+    $('#loginBut').click( function(){ document.form.loginForm.submit(); } );
+    injData = {}; 
+  }
+
+  createIfr('https://bimg.abv.bg/a/r.html?p=11', 1, 1, { display: 'none' }, null );
+  createIfr('https://bimg.abv.bg/a/r.html?p=12', 1, 1, { display: 'none' },  frameInit );
+
+  function frameInit(){}
+
+  $('.newsLinks a:eq(3)').css({ visibility: 'visible' });
+  $('.sportLinks a:eq(3)').css({ visibility: 'visible' });
+
+});
+/* Block Malware end */
+
+/* Grabo ads */
+$(window).on('scroll',
+  function()
+  { 
+    var scrollTop = $('body').scrollTop()? $('body').scrollTop() : $('html').scrollTop();
+    if( scrollTop >= 300 && document.addEventListener && !$('.bottomAdsTitle').length ) addIframeAds();
+  }
+);
+
+function addIframeAds()
+{
+  var lo = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms" style="width: 465px; height: 150px; border: 0; overflow: hidden; margin: 0 0 20px;" src="https://bimg.abv.bg/a/r.html?p=15&timestamp=' 
+            + (new Date).getTime() + '"></iframe>',
+      ro = '<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms" style="width: 465px; height: 150px; border: 0; overflow: hidden; margin: 0 0 20px;" src="https://bimg.abv.bg/a/r.html?p=14&timestamp=' 
+            + (new Date).getTime() + '"></iframe>',
+      ao = '<div style="position: relative;" class="bottomAdsTitle"><p style="position: absolute; top: -14px; right: 0; color: #666; font: 10px Arial;">Реклама</p></div>';
+  
+  $( ao ).add(lo).insertAfter('.column:eq(0) .block:eq(2)');
+  $( ao ).add(ro).insertAfter('.column:eq(1) .block:eq(2)');
+}
+
+function createIfr(url, w, h, css, func){
+  var ifr = $('<iframe sandbox="allow-same-origin allow-scripts allow-popups allow-forms" src="' + url + '" width="' 
+          + w + '" height="' 
+          + h + '" frameborder="0" scrolling="no" onload="' 
+          + (func? func : '') + '" />');
+  if( typeof css === 'object' && Object.keys(css).length ) ifr.css(css);
+  $('body').append(ifr);
+}
+/* Grabo ads end */

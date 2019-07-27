@@ -1,0 +1,261 @@
+function uselessWebButton(button, popup) {
+	// UI elements
+	var buttonElement = button;
+	var popupElement = popup;
+
+	var initialClick = false;
+	var randomRange = 6;
+
+	// Useless websites: url | uses flash
+	// Commented out websites which have crashed.
+	var sitesList = [
+		["https://theuselessweb.site/lookadeadfly/", false],
+		["https://theuselessweb.site/drunkronswanson/", false],
+		["https://theuselessweb.site/talktomyass/", false],
+		["https://theuselessweb.site/icantsleep/", false],
+		["https://theuselessweb.site/hmpg/", false],
+		["https://theuselessweb.site/broof/", false],
+		["https://theuselessweb.site/screaminggoatpiano/", false],
+		["https://theuselessweb.site/shamebell/", false],
+		["https://theuselessweb.site/8bitdance/", false],
+		["https://theuselessweb.site/coloursquares/", false],
+		["https://theuselessweb.site/secretsfornicotine/", false],
+		["https://theuselessweb.site/crapola/", false],
+		["https://theuselessweb.site/salmonofcapistrano/", false],
+		["https://theuselessweb.site/More-cowbell/", false],
+		["https://theuselessweb.site/buzzybuzz/", false],
+		["https://theuselessweb.site/buildshruggie/", false],
+		["https://theuselessweb.site/plspetdoge/", false],
+	    ["https://theuselessweb.site/oppositeofpoop/", false],
+		["https://theuselessweb.site/boohbah-zone/", false],
+		["https://theuselessweb.site/instantostrich/", false],
+		["https://theuselessweb.site/geodude/", false],
+		["https://theuselessweb.site/cuteroulette/", false],
+		["https://theuselessweb.site/infinitefrogs/", false],
+		["https://theuselessweb.site/agitatedchicken/", false],
+		["https://theuselessweb.site/wwwdotcom/", false],
+		["https://theuselessweb.site/ducksarethebest.com/", false],
+		["https://theuselessweb.site/grandpanoclothes.com/", false],
+		["https://theuselessweb.site/poop.bike/", false],
+		["https://theuselessweb.site/whatdoineed/", false],
+		["https://theuselessweb.site/thanksobama/", false],
+		["https://theuselessweb.site/retrolamp/", false],
+		["https://theuselessweb.site/dumbcalculator/", false],
+		["https://theuselessweb.site/interactive-triangualation/", false],
+		["https://theuselessweb.site/Death note type game/", false],
+		["https://theuselessweb.site/Successful Troll/", false],
+		["https://theuselessweb.site/Danzorz/", false],
+		["https://theuselessweb.site/Flight of the Hamsters/", false],
+		["https://theuselessweb.site/Know Your Destiny/", false],
+		["https://theuselessweb.site/Virtual Stapler/", false],
+		["https://theuselessweb.site/Game music/", false],
+		["https://theuselessweb.site/tunnelsnakes/", false],
+		["https://theuselessweb.site/annoyingdog/", false],
+		["https://theuselessweb.site/blueballmachine/", false],
+		["https://theuselessweb.site/roadblocks/", false],
+		["https://theuselessweb.site/kittencannon/", false],
+		["https://theuselessweb.site/blankwindows/", false],
+		["https://theuselessweb.site/faceofdisapproval/", false],
+	    ["https://theuselessweb.site/isittimeforanap/", false],
+		["https://theuselessweb.site/whitenoisemachine.com/", false],
+		["https://theuselessweb.site/tacospin/", false],
+		["https://theuselessweb.site/omglasergunspewpewpew/", false],
+		["https://theuselessweb.site/toastybutton/", false],
+		["https://theuselessweb.site/pleasewait/", false],
+		["https://theuselessweb.site/wafflecat/", false],
+		["https://theuselessweb.site/minionstranslator/", false],
+		["https://theuselessweb.site/fallingguy/", false],
+		["https://theuselessweb.site/flyguy/", false],
+		["https://theuselessweb.site/patience-is-a-virtue/", false],
+		["https://theuselessweb.site/whitetrash/", false],
+		["https://theuselessweb.site/pixelsfighting/", false],
+		["https://theuselessweb.site/isitwhite/", false],
+		["https://theuselessweb.site/onemillionlols/", false],
+		["https://theuselessweb.site/chihuahuaspin/", false],
+		["https://theuselessweb.site/ismycomputeron/", false],
+		["https://theuselessweb.site/iamawesome/", false],
+		["https://theuselessweb.site/electricboogiewoogie/", false],
+		["https://theuselessweb.site/willthefuturebeawesome/", false],
+		["https://theuselessweb.site/unicodesnowmanforyou/", false],
+		["https://theuselessweb.site/tencentsinfo/", false],
+        ["https://.website/pushtrumpoffacliffagain-com/", false],
+		["https://theuselessweb.site/leekspin.com/", false],
+		["https://theuselessweb.site/ninjaflex/", false],
+		["https://theuselessweb.site/imaninja/", false],
+		["https://theuselessweb.site/ouaismaisbon/", false],
+		["https://theuselessweb.site/hasthelargehadroncolliderdestroyedtheworldyet.com/", false],
+		["https://theuselessweb.site/please-like/", false],
+	    ["https://theuselessweb.site/fallingfalling/", false],
+		["https://theuselessweb.site/randomcolour.com/", false],
+		["https://theuselessweb.site/r33b.net/", false],
+		["https://theuselessweb.site/crouton/", false],
+		["https://theuselessweb.site/dottedlines/", false],
+		["https://theuselessweb.site/thebestdinosaur/", false],
+		["https://theuselessweb.site/www.everydayim.com/", false],
+		["https://theuselessweb.site/www.sanger.dk/", false],
+		["https://theuselessweb.site/bees/", false],
+		["https://theuselessweb.site/cant-not-tweet-this.com/", false],
+		["https://theuselessweb.site/tiling/", false],
+		["https://theuselessweb.site/thatsthefinger/", false],
+		["https://theuselessweb.site/tr-8r/", false],
+		["https://theuselessweb.site/hemansings/", false],
+		["https://theuselessweb.site/fanfare/", false],
+		["https://theuselessweb.site/puppytwister/", false],
+		["https://theuselessweb.site/youareanidiot/", false],
+		["https://theuselessweb.site/solitaire/", false],
+		["https://theuselessweb.site/exactcenteroftheinternet/", false],
+		["https://theuselessweb.site/deepblackhole/", false],
+		["https://theuselessweb.site/skulltrumpet/", false],
+		["https://theuselessweb.site/puppytummy/", false],
+		["https://theuselessweb.site/randomselectioninrandomimage/", false],
+		["https://theuselessweb.site/riddlydiddly/", false],
+		["https://theuselessweb.site/BecauseWhy/", false],
+		["https://theuselessweb.site/walama/", false],
+		["https://theuselessweb.site/dramabutton/", false],
+		["https://theuselessweb.site/hereistoday/", false],
+		["https://theuselessweb.site/spaceis.cool/", false],
+		["https://theuselessweb.site/khaaan/", false],
+	    ["https://theuselessweb.site/nooooooooooooooo/", false],
+		["https://theuselessweb.site/hiyoooo/", false],
+		["https://theuselessweb.site/shtuff/", false],
+		["https://theuselessweb.site/tomsdog/", false],
+		["https://theuselessweb.site/leglesslegolegolas/", false],
+		["https://theuselessweb.site/lifeisnotfair/", false],
+		["https://theuselessweb.site/something/", false],
+		["https://theuselessweb.site/randomdoh/", false],
+		["https://theuselessweb.site/comingupmilhouse/", false],
+		["https://theuselessweb.site/purple/", false],
+		["https://theuselessweb.site/stagnationmeansdecline/", false],
+		["https://theuselessweb.site/wewillattack/", false],
+		["https://theuselessweb.site/pleasetouchme/", false],
+		["https://theuselessweb.site/iamveryverysorry/", false],
+		["https://theuselessweb.site/everythingyouseeisinthepast/", false],
+		["https://theuselessweb.site/nosquito/", false],
+		["https://theuselessweb.site/vaiavanti/", false],
+		["https://theuselessweb.site/futurephysics/", false],
+		["https://theuselessweb.site/popcornpainting/", false],
+		["https://theuselessweb.site/coldvoid/", false],
+		["https://theuselessweb.site/invisiblecursor/", false],
+		["https://theuselessweb.site/tinycursor/", false],
+		["https://theuselessweb.site/aestheticecho/", false],
+		["https://theuselessweb.site/beefchickenpork/", false],
+		["https://theuselessweb.site/annoyingcursor/", false],
+		["https://theuselessweb.site/hotdoom/", false],
+		["https://theuselessweb.site/fromthedarkpast/", false],
+		["https://theuselessweb.site/closedshut/", false],
+		["https://theuselessweb.site/nekromisantrop/", false],
+		["https://theuselessweb.site/thepersistenceofsadness/", false],
+		["https://theuselessweb.site/tothewater/", false],
+		["https://theuselessweb.site/flaminglog/", false],
+		["https://theuselessweb.site/yesforsure.com/", false],
+		["https://theuselessweb.site/inceptionbutton/", false],
+		["https://theuselessweb.site/niceonedad/", false],
+		["https://theuselessweb.site/nootnoot/", false],
+		["https://theuselessweb.site/youhaveautism/", false],
+		["https://theuselessweb.site/ffffidget/", false],
+	    ["https://theuselessweb.site/howbigismypotato/", false],
+		["https://theuselessweb.site/feedderpy/", false],
+		["https://theuselessweb.site/exotic-butters/", false],
+		["https://theuselessweb.site/marvelous-breadfish/", false],
+		["https://theuselessweb.site/thebigdog.club/", false],
+		["https://theuselessweb.site/sealspin/", false],
+		["https://theuselessweb.site/thispeanutlookslikeaduck/", false],
+		["https://theuselessweb.site/hardcoreprawnlawn/", false],
+		["https://theuselessweb.site/uppertolowercase/", false],
+		["https://theuselessweb.site/minecraftstal/", false],
+		["https://theuselessweb.site/breakglasstosoundalarm/", false],
+	];
+
+	var sites = null;
+
+	// Prepares and binds the button
+	var init = function() {
+		button.onclick = onButtonClick;
+
+		// If the browser doesn't support flash. Remove flash websites from the list.
+		// if ( !swfobject.hasFlashPlayerVersion("1") ) {
+		// 	removeFlashWebsites();
+		// }
+
+		sites = sitesList.slice(0);
+
+		// If the Browser supports html5 storage
+		if (supportsHtmlStorage() === true) {
+			// Check for past data
+			if (localStorage["sites"] !== undefined) {
+				loadSites();
+			}
+		}
+	};
+
+	// Removes flash websites from the list
+	var removeFlashWebsites = function() {
+		var i, site;
+		var newList = [];
+
+		for (i = 0; i < sitesList.length; i++) {
+			site = sitesList[i];
+			if (site[1] === false) {
+				newList.push(site);
+			}
+		}
+
+		sitesList = newList;
+	};
+
+	// Selects and removes the next website from the list
+	var selectWebsite = function() {
+		var site, range, index;
+
+		range = randomRange > sites.length ? sites.length : randomRange;
+		index = Math.floor(Math.random() * range);
+
+		site = sites[index];
+		sites.splice(index, 1);
+
+		return site;
+	};
+
+	// Opens the given url in a new window
+	var openSite = function(url) {
+		window.open(url);
+	};
+
+	var onButtonClick = function() {
+		// Track click count.
+		_gaq.push(["_trackEvent", "user", "clicks", "button"]);
+
+		// Change text from "TO A"
+		if (initialClick === false) {
+			document.getElementById("joint").innerHTML = "TO ANOTHER";
+			initialClick = true;
+		}
+
+		var url = selectWebsite()[0];
+		openSite(url);
+
+		// User has visited ALL the sites... refresh the list.
+		if (sites.length == 0) {
+			// If the browser doesn't support flash. Remove flash websites from the list.
+			// if ( !swfobject.hasFlashPlayerVersion("1") ) {
+			// 	removeFlashWebsites();
+			// }
+
+			sites = sitesList.slice(0);
+		}
+
+		storeSites();
+	};
+
+	// Save the current list of sites for the new user.
+	var storeSites = function() {
+		localStorage["sites"] = JSON.stringify(sites);
+	};
+
+	// Load the list of sites, so new users see new sites.
+	var loadSites = function() {
+		sites = JSON.parse(localStorage["sites"]);
+	};
+
+	init();
+}

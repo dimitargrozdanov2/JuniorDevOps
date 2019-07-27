@@ -1,0 +1,231 @@
+if (window.Element && !Element.prototype.closest) {
+    Element.prototype.closest =
+        function (s) {
+            var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+                i,
+                el = this;
+            do {
+                i = matches.length;
+                while (--i >= 0 && matches.item(i) !== el) { };
+            } while ((i < 0) && (el = el.parentElement));
+            return el;
+        };
+}
+
+(function (d, w) {
+    console.log('Gtm v.7.8');
+
+    var receiverLoaded = false,
+        IF = d.createElement('iframe'),
+        GTM = null,
+        cname = 'netinfo_consent_bit';
+
+    w.addEventListener('load', pageInit, false);
+    w.addEventListener('message', receiveMessage, false);
+
+    w.sendToGTM = function (msg) {
+        msg = JSON.stringify(msg);
+        try {
+            if (/(?=^(\{)).*?(?=(\})$)/.test(msg) && !!GTM) {
+                GTM.postMessage(msg, '*');
+            }
+        } catch (err) {
+            console.log('Error while sending GTM data: ', err);
+        }
+    }
+
+    function receiveMessage(e) {
+        if (e.origin !== 'https://img.abv.bg') return;
+        if (e.data.toString() === 'abv_gtm') {
+            receiverLoaded = true;
+        }
+    }
+
+    function createFrame() {
+        IF.id = 'abv-GTMCounter';
+        IF.setAttribute('src', 'https://img.abv.bg/e/s/gtm.html?t=' + (new Date).getTime());
+        IF.setAttribute('frameborder', 0);
+        IF.setAttribute('scrolling', 'no');
+        IF.setAttribute('sandbox', 'allow-same-origin allow-scripts');
+        IF.setAttribute('style', 'width: 1px; height: 1px; position: fixed; top: -1px; left: -1px; visibility: hidden;');
+        d.body.appendChild(IF);
+    }
+
+    function pageInit() {
+        createFrame();
+        GTM = IF.contentWindow || IF.contentDocument;
+
+        //w.addEventListener('click', eventRegister, false);
+        subscribeEvent('body', 'click', 'a', eventRegister);
+
+        var tid = w.setInterval(function () {
+            if (receiverLoaded) {
+                clearInterval(tid);
+                sendToGTM({
+                    event: 'virtualPageviewABV',
+                    pageLocation: d.location.href,
+                    pageHostname: d.location.host,
+                    pagePath: d.location.pathname,
+                    pageTitle: d.title,
+                    pageReferrer: d.referrer
+                });
+
+                var consent = getCookie(cname);
+
+                if (consent) sendToGTM({
+                    consent: { name: cname, value: consent }
+                });
+            }
+        }, 100);
+    }
+
+    w.eventRegister = function (event) {
+        var o = event.target,
+            a = o.tagName.toLowerCase() === 'a' ? o : o.parentNode.tagName.toLowerCase() === 'a' ? o.parentNode : o.closest('a'),
+            hrefTarget = !!a.target ? a.target : '',
+            hrefCheck = !a.href || /^(javascript\:)|^(\#)|(\#)$/g.test(a.href),
+            i = o.tagName.toLowerCase() === 'img' || o.className === 'image',
+            txt = a.textContent ? a.textContent : i && o.alt ? o.alt : o.title ? o.title : '';
+
+        if (hrefCheck) return;
+
+        var name = (o.closest('div.block') || o.closest('div[id]')).id,
+            categoryId = parents(o).indexOf(d.querySelector('#blocks')) > -1 ? 'blocks' : o.closest('div[id="promoZone"]') !== null ? 'promoZone' : '',
+            categoryName = categoryId === 'blocks' ? 'hp-blocks-clicks' : categoryId === 'promoZone' ? 'hp-promozone-clicks' : 'other-clicks',
+            id = Array.prototype.slice.call(document.getElementById(name).querySelectorAll('a')).indexOf(a),
+            clickedHost = ((new URL(a.href)).hostname).replace(/^(www\.)/, '');
+
+        sendToGTM({
+            event: event.type,
+            'gtm.elementUrl': a.href,
+            'gtm.elementTarget': hrefTarget,
+            'gtm.elementId': a.id,
+            'gtm.elementClass': a.className,
+            pageHostname: d.location.host,
+            pagePath: d.location.pathname,
+            pageTitle: document.title,
+            pageLocation: d.location.href,
+            clickName: mapNames(name || categoryId), // block name - promoZone, sinoptik, 
+            clickCategory: categoryName, // category name - hp-promozone-clicks, hp-blocks-clicks
+            clickPosition: (id + 1) + (i ? ' (image)' : ''), // link index or for image 0 
+            clickDomain: clickedHost, // domain of clicked url
+            clickText: txt
+        });
+
+        function mapNames(name) {
+            var newName = '';
+            switch (name) {
+                case '1':
+                    newName = 'Новини';
+                    break;
+                case '2':
+                    newName = 'Спорт';
+                    break;
+                case '3':
+                    newName = 'За жените';
+                    break;
+                case '4':
+                    newName = 'Забавно';
+                    break;
+                case '5':
+                    newName = 'Дата / Час';
+                    break;
+                case '6':
+                    newName = 'Времето';
+                    break;
+                case '7':
+                    newName = 'Бизнес';
+                    break;
+                case '8':
+                    newName = 'Хороскопи';
+                    break;
+                default:
+                    newName = name;
+                    break;
+            }
+            return newName;
+        }
+    }
+
+    function getCookie(cname) {
+        var name = cname + '=',
+            decodedCookie = decodeURIComponent(document.cookie),
+            ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return '';
+    }
+
+    function subscribeEvent(parentSelector, eventName, childSelector, eventCallback) {
+
+        if (parentSelector == null)
+            throw new ReferenceError("Parameter parentSelector is NULL");
+        if (childSelector == null)
+            throw new ReferenceError("Parameter childSelector is NULL");
+
+
+        var nodeToObserve = parentSelector;
+        if (typeof (parentSelector) === 'string')
+            nodeToObserve = document.querySelector(parentSelector);
+        var eligibleChildren = nodeToObserve.querySelectorAll(childSelector);
+        for (var i = 0; i < eligibleChildren.length; ++i) {
+            eligibleChildren[i].addEventListener(eventName, eventCallback, false);
+        }
+
+        function allDescendants(node) {
+
+            if (node == null)
+                return;
+            for (var i = 0; i < node.childNodes.length; i++) {
+                var child = node.childNodes[i];
+                allDescendants(child);
+            }
+
+            if (!Element.prototype.matches)
+                Element.prototype.matches = Element.prototype.msMatchesSelector;
+            if (node.matches) {
+                if (node.matches(childSelector)) {
+                    node.addEventListener(eventName, eventCallback, false);
+                }
+
+            }
+
+        }
+
+        var callback = function (mutationsList, observer) {
+            for (var _i = 0, mutationsList_1 = mutationsList; _i < mutationsList_1.length; _i++) {
+                var mutation = mutationsList_1[_i];
+
+                if (mutation.type == 'childList') {
+                    for (var i = 0; i < mutation.addedNodes.length; ++i) {
+                        var thisNode = mutation.addedNodes[i];
+                        allDescendants(thisNode);
+                    }
+                }
+
+            }
+        };
+
+        var config = { attributes: false, childList: true, subtree: true };
+        var observer = new MutationObserver(callback);
+        observer.observe(nodeToObserve, config);
+    }
+
+    function parents(node) {
+        var current = node,
+            list = [];
+        while (current.parentNode != null && current.parentNode != document.documentElement) {
+            list.push(current.parentNode);
+            current = current.parentNode;
+        }
+        return list
+    }
+
+})(document, window);
