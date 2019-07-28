@@ -1,0 +1,11 @@
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\obj\Debug\netcoreapp2.2\ReadingFile.csprojAssemblyReference.cache
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\obj\Debug\netcoreapp2.2\ReadingFile.csproj.CoreCompileInputs.cache
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\obj\Debug\netcoreapp2.2\ReadingFile.AssemblyInfoInputs.cache
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\obj\Debug\netcoreapp2.2\ReadingFile.AssemblyInfo.cs
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\bin\Debug\netcoreapp2.2\ReadingFile.deps.json
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\bin\Debug\netcoreapp2.2\ReadingFile.runtimeconfig.json
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\bin\Debug\netcoreapp2.2\ReadingFile.runtimeconfig.dev.json
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\bin\Debug\netcoreapp2.2\ReadingFile.dll
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\bin\Debug\netcoreapp2.2\ReadingFile.pdb
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\obj\Debug\netcoreapp2.2\ReadingFile.dll
+C:\Users\grozdeto\Desktop\Telerik\Endava challenge\JuniorDevOps\ReadingFile\obj\Debug\netcoreapp2.2\ReadingFile.pdb
