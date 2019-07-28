@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace ReadingFile
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             //string masiv s imenata na failove s podrazdelenie html
             string juniorDevOpsFolder = "JuniorDevOps";
             string targetPath = Directory.GetCurrentDirectory();
@@ -16,34 +21,34 @@ namespace ReadingFile
             string targetDirectory = Path.Combine(juniorDevOpsPath, directory);
             //  Console.WriteLine(targetDirectory);
             ProcessDirectory(targetDirectory);
-           
-        }
-            public static void ProcessDirectory(string targetDirectory)
-            {
-                // Process the list of files found in the directory.
-                string[] fileEntries = Directory.GetFiles(targetDirectory);
-                foreach (string fileName in fileEntries)
-                    ProcessFile(fileName);
+            stopwatch.Stop();
 
-                // Recurse into subdirectories of this directory.
-                //string[] subdirectoryEntries = Directory.GetDirectories(targetDirectory);
-                //foreach (string subdirectory in subdirectoryEntries)
-                //    ProcessDirectory(subdirectory);
-            }
-            public static void ProcessFile(string path)
-            {
-            int counter = 0;
-                foreach (var line in File.ReadAllLines(path))
-                {
-                    if (line.Contains("href="))
-                {
-                    counter++;
-                }
-                }
-                Console.WriteLine("Processed file '{0}'.", path);
-                Console.WriteLine("In this file the number of appearance of href is '{0}'.", counter);
-            Console.WriteLine();
-            
+            // Write hours, minutes and seconds.
+            Console.WriteLine("Time elapsed: {0}", stopwatch.ElapsedMilliseconds + "ms");
+        }
+        public static void ProcessDirectory(string targetDirectory)
+        {
+            // Process the list of files found in the directory.
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+                    ProcessFile(fileName);
+        }
+
+        public static void ProcessFile(string path)
+        {
+            string folder = Path.GetDirectoryName(path);
+            string file = Path.GetFileName(path);
+
+            // Keep the first 6 characters from the source file and include hrefcount
+            string newFile = file.Substring(0, 6) + " hrefcount.txt";
+            string newPath = Path.Combine(folder, newFile); 
+
+            //Retrieve counter with IEnumerable and LinQ
+            int counter = File.ReadLines(path).Count(x => x.Contains("href="));
+   
+            File.WriteAllText(newPath, $"The number of times href appears is {counter}");
+            File.Delete(newPath);            
         }
     }
-    }
+}
+
